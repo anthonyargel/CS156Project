@@ -1,15 +1,15 @@
 import numpy as np
-
+from Agent import *
 
 # This board class holds an array that represents a connect 4 board.
 # This array should only hold -1, 0, or 1.
-# -1 represents opponent piece, 1 represents player piece, and 0 representing no piece in that slot on the array.
+# 2 represents opponent piece, 1 represents player piece, and 0 representing no piece in that slot on the array.
 class Board():
-    def __init__(self, row = 6, column = 7):
+    def __init__(self, row = 7, column = 7):
         self.row = row
         self.column = column
         self.boardSize = (row,column)
-        self.board = np.zeros((row,column)) # create a 2d array of 0s using rows and columns
+        self.board = grids = [[0] * column for _ in range(row)]
 
     # resets the board by making all values 0.
     def reset_board(self):
@@ -32,13 +32,20 @@ class Board():
                 currentRow.append(self.board[i][j])
             result.append(currentRow)
         return result
+    
+    def printBoardState(self):
+        print('Current board:')
+        print(*self.board, sep='\n')
 
+    def placePiece(self, pos, player):
+        self.board[pos[0]][pos[1]] = player
+    
     # given a column number, find the next row that a piece will be placed in.
     # returns the next placement of the piece, if the column is full, will return [-1,-1]
     def getNextPlacement(self, colNbr):
         thePlacementPos = [] # list containing x,y of new pos
-        lastRowPos = self.row #create a variable as the last row position
-        while(self.board[lastRowPos - 1][colNbr] != 0 and lastRowPos != -1): # loop through rows in that column
+        lastRowPos = self.row - 1 #create a variable as the last row position
+        while(self.board[lastRowPos][colNbr] != 0 and lastRowPos != -1): # loop through rows in that column
             lastRowPos = lastRowPos - 1 # if that row isn't empty (aka 0) then look at the next lowest position
             #print(lastRowPos)
         # when we findlowest nonused spot, save it in a list
@@ -54,24 +61,30 @@ class Board():
 
 
 
+######### test code
 
-# board testing code from board.py
-        
-b1 = Board()
-#print(b1.getBoardState())
+# create the board
+b2 = Board()
 
-testColumn = 3
-for i in range(b1.row):
-    b1.board[i][testColumn] = 1
-#b1.board[b1.row-1][b1.column-1] = 1
-print(b1.getBoardState())
-#place = b1.getNextPlacement(testColumn)
-#print(place)
+# emulating human turn
+pos = b2.getNextPlacement(1)
+b2.placePiece(pos, 1)
 
-for j in range(b1.column):
-    pos = b1.getNextPlacement(j)
-    if(pos[0] == -1):
-        print("no free space available at that position")
-    else:
-        print("Next free space is at: " + str(b1.getNextPlacement(j)))
+# emulating AI turn
+pos = b2.getNextPlacement(4)
+b2.placePiece(pos, 2)
+
+# emulating human turn
+pos = b2.getNextPlacement(1)
+#b2.placePiece(pos, 1)
+
+# emulating AI turn
+pos = b2.getNextPlacement(5)
+b2.placePiece(pos, 2)
+
+b2.printBoardState()
+a = Agent()
+a.runStaticEvaluatorFunction(b2.board)
+
+
 
