@@ -29,7 +29,7 @@ class Agent():
         if isMax == True:
             for i in len(self.board[0]):
                 newP = currentBoard.getNextPlacement(i)
-                currentBoard[newP[0], newP[1]] = 2
+                currentBoard.placePiece(newP,2)
                 if atRoot == True:
                     startingPos = newP
                 minMax(startingPos, False, False, maxDepth, currentDepth + 1, currentBoard, val)
@@ -37,7 +37,7 @@ class Agent():
         else:
             for i in len(self.board[0]):
                 newP = currentBoard.getNextPlacement(i)
-                currentBoard[newP[0], newP[1]] = 1
+                currentBoard.placePiece(newP,1)
                 if atRoot == true:
                     startingPos = newP
                 minMax(startingPos, False, True, maxDepth, currentDepth + 1, currentBoard, val)
@@ -126,25 +126,26 @@ class Agent():
 
         
         # loop up down
-        for i in range(len(board)):
+        for i in range(len(board[0])):
             counter = 0
             color = -1
             for j in range(len(board[i])):
                 if board[j][i] == color:
                     counter = counter + 1
+                    print(color)
                 elif board[j][i] != color:
     # if the board changes color then add totals
                     #the first 1 or 2 we meet becomes color and is counted once
                     if board[j][i] == 1 or board[j][i] == 2 and color == -1:
                         color = board[j][i]
                         counter = 1
-                        if j == len(board[i]) - 1: # edge case
+                        if j == len(board) - 1: # edge case
                             if color == 1:
                                 oneBad = oneBad + 1
                             else:
                                 oneGood = oneGood + 1
                     # if 1, we add bad values
-                    elif color == 1:
+                    elif color == 1 and board[j][i] == 2:
                         if counter >= 4:
                             frBad = frBad + 1
                         elif counter == 3:
@@ -155,7 +156,7 @@ class Agent():
                             oneBad = oneBad + 1
                         color = board[j][i]
                         counter = 1
-                    elif color == 2:
+                    elif color == 2 and board[j][i] == 1:
                         if counter >= 4:
                             frGood = frGood +1
                         elif counter == 3:
@@ -167,8 +168,32 @@ class Agent():
                             # reset counter
                         color = board[j][i]
                         counter = 1
-                    else:
+                    elif board[j][i] == 0 and color != -1: #if board is 0 but previous color wasn't 0
+                        #print(str(counter))
+                        print("got here?")
+                        if color == 1:
+                            if counter >= 4:
+                                frBad = frBad + 1
+                            elif counter == 3:
+                                thrBad = thrBad + 1
+                            elif counter == 2:
+                                twoBad = twoBad + 1
+                            elif counter == 1:
+                                oneBad = oneBad + 1
+                        elif color == 2:
+                            if counter >= 4:
+                                frGood = frGood +1
+                            elif counter == 3:
+                                thrGood = thrGood + 1
+                            elif counter == 2:
+                                twoGood = twoGood +1
+                            elif counter == 1:
+                                oneGood = oneGood + 1
+                                # reset to default because 0 means nothing there
+                        color = -1
                         counter = 0
+                        #print("counter reset")
+                    print(color) #shows how the loop is going
 
        
         # loop diag negative slope

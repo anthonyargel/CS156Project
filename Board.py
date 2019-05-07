@@ -76,7 +76,7 @@ b2.placePiece(pos, 2)
 
 # emulating human turn
 pos = b2.getNextPlacement(1)
-#b2.placePiece(pos, 1)
+b2.placePiece(pos, 1)
 
 # emulating AI turn
 pos = b2.getNextPlacement(5)
